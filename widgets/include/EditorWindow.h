@@ -10,6 +10,7 @@
 #include <QRadioButton>
 
 #include "CanvasArea.h"
+#include "PointMenu.h"
 
 #if defined MAKE_UI_LIB
 #define UI_LIB_EXPORT Q_DECL_EXPORT
@@ -23,6 +24,7 @@ class UI_LIB_EXPORT EditorWindow final : public QWidget
 
 public:
     explicit EditorWindow(QWidget* parent = nullptr);
+
 protected:
     bool eventFilter(QObject* watched, QEvent* event) override;
 
@@ -33,6 +35,7 @@ public slots:
     void closeEditor();
     void keyPressEvent(QKeyEvent* event) override;
     void keyReleaseEvent(QKeyEvent* event) override;
+    void openedSettings(double x, double y, int j, int i);
 
 private slots:
     void resizeEvent(QResizeEvent* event) override;
@@ -41,6 +44,8 @@ private slots:
     void zoomReset();
     void onRadioButtonClicked(bool checked);
     void onAddVertexModeChanged(bool mode);
+    void onPointMenuClosed();
+    void onPointMenuUpdated(double x, double y);
 
 private:
     QWidget* window;
@@ -62,4 +67,5 @@ private:
     QPushButton* zoomResetButton;
     QPushButton* okButton;
     QRadioButton* addVertexButton;
+    PointMenu* pointMenu{};
 };

@@ -8,16 +8,21 @@ EditorWindow::EditorWindow(QWidget* parent)
 {
     mainLayout = new QVBoxLayout;
     canvasArea = new CanvasArea(parent);
+    canvasArea->installEventFilter(this);
     mainLayout->addWidget(canvasArea);
     mainLayout->setContentsMargins(0, 0, 0, 0);
 
     toolsLayout = new QVBoxLayout;
     countersLayout = new QHBoxLayout();
     buttonsLayout = new QHBoxLayout();
-    labelN = new QLabel("N");
-    labelK = new QLabel("K");
-    labelM = new QLabel("M");
-    labelM1 = new QLabel("M1");
+    labelN = new QLabel("N: ");
+    labelN->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
+    labelK = new QLabel("K: ");
+    labelK->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
+    labelM = new QLabel("M: ");
+    labelM->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
+    labelM1 = new QLabel("M1: ");
+    labelM1->setAlignment(Qt::AlignRight|Qt::AlignVCenter);
 
     nSpinbox = new QSpinBox();
     nSpinbox->installEventFilter(this);
@@ -69,7 +74,7 @@ EditorWindow::EditorWindow(QWidget* parent)
     //connections
     connect(addVertexButton, &QRadioButton::toggled, this, &EditorWindow::onRadioButtonClicked);
     connect(canvasArea, &CanvasArea::addVertexModeChanged, this, &EditorWindow::onAddVertexModeChanged);
-
+    connect(canvasArea, &CanvasArea::openedSettingsForVertex, this, &EditorWindow::openedSettings);
 
     //window settings
     resize(800, 600);
@@ -86,6 +91,14 @@ bool EditorWindow::eventFilter(QObject* watched, QEvent* event)
         {
             canvasArea->deleteChosenKeyPoint();
             return true;
+        }
+    }
+    else if (event->type() == QEvent::MouseButtonPress && watched == canvasArea)
+    {
+        if (pointMenu != nullptr)
+        {
+            pointMenu->closeEvent(new QCloseEvent{});
+            pointMenu = nullptr;
         }
     }
     return QWidget::eventFilter(watched, event);
@@ -117,6 +130,18 @@ void EditorWindow::keyReleaseEvent(QKeyEvent* event)
     QWidget::keyReleaseEvent(event);
 }
 
+void EditorWindow::openedSettings(double x, double y, int j, int i)
+{
+    if (pointMenu != nullptr)
+    {
+        pointMenu->close();
+    }
+    pointMenu = new PointMenu(x,y);
+    connect(pointMenu, &PointMenu::onCLose, this, &EditorWindow::onPointMenuClosed);
+    connect(pointMenu, &PointMenu::valueUpdated, this, &EditorWindow::onPointMenuUpdated);
+    pointMenu->show();
+}
+
 void EditorWindow::resizeEvent(QResizeEvent* event)
 {
     canvasArea->resize(width(), height() - 65);
@@ -144,4 +169,15 @@ void EditorWindow::onRadioButtonClicked(bool checked)
 void EditorWindow::onAddVertexModeChanged(bool mode)
 {
     addVertexButton->setChecked(mode);
+}
+
+void EditorWindow::onPointMenuClosed()
+{
+    pointMenu->close();
+    pointMenu = nullptr;
+}
+
+void EditorWindow::onPointMenuUpdated(double x, double y)
+{
+    canvasArea->updateChosenKeyPoint(x,y);
 }

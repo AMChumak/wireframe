@@ -20,6 +20,7 @@ public:
 
 signals:
     void addVertexModeChanged(bool mode);
+    void openedSettingsForVertex(double x, double y, int j, int i);
 
 public slots:
     void resizeEvent(QResizeEvent* event) override;
@@ -31,9 +32,11 @@ public slots:
     void setAddVertexMode(bool mode);
     void deleteChosenKeyPoint();
     void updateN(int newN);
+    void mouseDoubleClickEvent(QMouseEvent* event) override;
+    void updateChosenKeyPoint(double x, double y);
 
 private:
-    //elements of cannvas
+    //elements of canvas
     QImage canvas;
     QPen axisXPen;
     QPen axisYPen;

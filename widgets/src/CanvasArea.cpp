@@ -257,3 +257,34 @@ void CanvasArea::updateN(int newN)
     update();
 }
 
+void CanvasArea::mouseDoubleClickEvent(QMouseEvent* event)
+{
+    QPoint screenCenter = QPoint(this->size().width() / 2, this->size().height() / 2);
+    chosenKeyPoint = -1;
+    auto &keyPoints = spline.keyPoints();
+    int x = 0, y = 0;
+    for (int i = 0; i < keyPoints.size(); i++)
+    {
+        Point3D curKPoint = (keyPoints[i] - cameraCenter) * zoom;
+        QPoint curKeyPoint = Point3DToQPoint(curKPoint) + screenCenter;
+        QPoint dist = curKeyPoint - event->pos();
+        if (dist.x() * dist.x() + dist.y() *dist.y() <= 36)
+        {
+            chosenKeyPoint = i;
+            x = curKeyPoint.x();
+            y = curKeyPoint.y();
+            break;
+        }
+    }
+    update();
+    if (chosenKeyPoint < 0)
+        return;
+    emit openedSettingsForVertex(keyPoints[chosenKeyPoint].x, keyPoints[chosenKeyPoint].y, x, y);
+
+}
+
+void CanvasArea::updateChosenKeyPoint(double x, double y)
+{
+    spline.updateKeyPoint(chosenKeyPoint, x, y, 0);
+    update();
+}
