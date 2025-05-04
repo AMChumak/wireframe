@@ -41,7 +41,7 @@ PointMenu::PointMenu(double x, double y)
     btnLayout->addWidget(okButton);
     connect(okButton, SIGNAL(clicked()),this, SLOT(onOkClicked()));
     btnLayout->addWidget(cancelButton);
-    connect(okButton, SIGNAL(clicked()),this, SLOT(onCancelClicked()));
+    connect(cancelButton, SIGNAL(clicked()),this, SLOT(onCancelClicked()));
 
     mLayout->addLayout(xLayout);
     mLayout->addLayout(yLayout);
