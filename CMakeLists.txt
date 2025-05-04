@@ -8,6 +8,7 @@ set(CMAKE_PREFIX_PATH "/home/anton/Qt/6.8.1/gcc_64/lib/cmake")
 find_package(Qt6 6.5 REQUIRED COMPONENTS Core Widgets Gui)
 
 add_subdirectory(widgets)
+add_subdirectory(model/engine)
 
 qt_standard_project_setup()
 
@@ -20,6 +21,7 @@ qt_add_executable(${PROJECT_NAME}
 target_link_libraries(${PROJECT_NAME}
         PUBLIC
         ui_lib
+        engine_lib
         PUBLIC
         Qt6::Core
         Qt6::Widgets

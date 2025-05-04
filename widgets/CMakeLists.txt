@@ -22,4 +22,5 @@ target_link_libraries(${LIB_NAME}
         PUBLIC
         Qt6::Core
         Qt6::Widgets
-        Qt6::Gui)
+        Qt6::Gui
+        engine_lib)
