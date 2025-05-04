@@ -40,10 +40,13 @@ EditorWindow::EditorWindow(QWidget* parent)
     okButton = new QPushButton("OK");
     zoomInButton = new QPushButton("zoom in");
     zoomInButton->setIcon(QIcon(":/resources/zoom_in.png"));
+    connect(zoomInButton, SIGNAL(clicked()), this, SLOT(zoomIn()));
     zoomOutButton = new QPushButton("zoom out");
     zoomOutButton->setIcon(QIcon(":/resources/zoom_out.png"));
-    zoomResetButton = new QPushButton("zoom reset");
+    connect(zoomOutButton, SIGNAL(clicked()), this, SLOT(zoomOut()));
+    zoomResetButton = new QPushButton("smart zoom");
     zoomResetButton->setIcon(QIcon(":/resources/zoom_reset.png"));
+    connect(zoomResetButton, SIGNAL(clicked()), this, SLOT(zoomReset()));
 
     addVertexButton = new QRadioButton("add vertex");
     addVertexButton->setIcon(QIcon(":/resources/add.svg"));
@@ -151,14 +154,17 @@ void EditorWindow::resizeEvent(QResizeEvent* event)
 
 void EditorWindow::zoomIn()
 {
+    canvasArea->zoomIn();
 }
 
 void EditorWindow::zoomOut()
 {
+    canvasArea->zoomOut();
 }
 
 void EditorWindow::zoomReset()
 {
+    canvasArea->zoomReset();
 }
 
 void EditorWindow::onRadioButtonClicked(bool checked)

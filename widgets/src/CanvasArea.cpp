@@ -288,3 +288,74 @@ void CanvasArea::updateChosenKeyPoint(double x, double y)
     spline.updateKeyPoint(chosenKeyPoint, x, y, 0);
     update();
 }
+
+void CanvasArea::zoomIn()
+{
+    zoom *= 1.1;
+    update();
+}
+
+void CanvasArea::zoomOut()
+{
+    zoom /= 1.1;
+    update();
+}
+
+void CanvasArea::zoomReset()
+{
+    auto &keyPoints = spline.keyPoints();
+    auto &points = spline.points();
+
+    if (keyPoints.size() == 0)
+    {
+        zoom = 10.0;
+        cameraCenter = {0,0,0};
+        update();
+        return;
+    }
+
+    Point3D minSize{0,0,0};
+    double sidesRatio = (double)size().height() / size().width();
+    for (int i = 0; i < keyPoints.size(); i++)
+    {
+        auto point = keyPoints[i];
+        if (point.x < 0)
+            point.x *= -1;
+        if (point.y < 0)
+            point.y *= -1;
+
+        if (point.x > minSize.x)
+        {
+            minSize.x = point.x;
+            minSize.y = minSize.x * sidesRatio;
+        }
+        if (point.y > minSize.y)
+        {
+            minSize.y = point.y;
+            minSize.x = minSize.y / sidesRatio;
+        }
+    }
+
+    for (int i = 0; i < points.size(); i++)
+    {
+        auto point = points[i];
+        if (point.x < 0)
+            point.x *= -1;
+        if (point.y < 0)
+            point.y *= -1;
+
+        if (point.x > minSize.x)
+        {
+            minSize.x = point.x;
+            minSize.y = minSize.x * sidesRatio;
+        }
+        if (point.y > minSize.y)
+        {
+            minSize.y = point.y;
+            minSize.x = minSize.y / sidesRatio;
+        }
+    }
+    zoom = size().width() / (2*minSize.x) / 1.2;
+    cameraCenter = {0,0,0};
+    update();
+}

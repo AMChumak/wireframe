@@ -17,6 +17,9 @@ class CanvasArea : public QWidget
 
 public:
     explicit CanvasArea(QWidget* parent = nullptr);
+    void zoomIn();
+    void zoomOut();
+    void zoomReset();
 
 signals:
     void addVertexModeChanged(bool mode);
