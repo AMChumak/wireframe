@@ -71,7 +71,7 @@ void BSpline::updatePoints()
         Vector4d zVector = { keyPoints_[i-1].z, keyPoints_[i].z , keyPoints_[i+1].z , keyPoints_[i+2].z};
         for (int j = 0; j <= cntParts_; j++)
         {
-            double t = static_cast<double>(j)/(cntParts_ + 1);
+            double t = static_cast<double>(j)/(cntParts_);
             Point3D point{};
 
             Vector4d timeVector = {t*t*t, t*t, t , 1};

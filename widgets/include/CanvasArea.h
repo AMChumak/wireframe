@@ -18,6 +18,9 @@ class CanvasArea : public QWidget
 public:
     explicit CanvasArea(QWidget* parent = nullptr);
 
+signals:
+    void addVertexModeChanged(bool mode);
+
 public slots:
     void resizeEvent(QResizeEvent* event) override;
     void paintEvent(QPaintEvent* event) override;
@@ -26,8 +29,8 @@ public slots:
     void mouseReleaseEvent(QMouseEvent* event) override;
     void wheelEvent(QWheelEvent* event) override;
     void setAddVertexMode(bool mode);
-
-private:
+    void deleteChosenKeyPoint();
+    void updateN(int newN);
 
 private:
     //elements of cannvas

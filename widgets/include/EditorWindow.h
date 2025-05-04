@@ -23,13 +23,16 @@ class UI_LIB_EXPORT EditorWindow final : public QWidget
 
 public:
     explicit EditorWindow(QWidget* parent = nullptr);
-
+protected:
+    bool eventFilter(QObject* watched, QEvent* event) override;
 
 signals:
     void onCloseEditor();
 
 public slots:
     void closeEditor();
+    void keyPressEvent(QKeyEvent* event) override;
+    void keyReleaseEvent(QKeyEvent* event) override;
 
 private slots:
     void resizeEvent(QResizeEvent* event) override;
@@ -37,6 +40,7 @@ private slots:
     void zoomOut();
     void zoomReset();
     void onRadioButtonClicked(bool checked);
+    void onAddVertexModeChanged(bool mode);
 
 private:
     QWidget* window;

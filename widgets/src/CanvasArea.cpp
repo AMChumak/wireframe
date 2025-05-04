@@ -100,49 +100,48 @@ void CanvasArea::paintEvent(QPaintEvent* event)
     //draw auxiliary lines
     painter.setPen(auxiliaryPen);
     const auto& keyPoints = spline.keyPoints();
-
-    Point3D lastKPoint = (keyPoints[0] - cameraCenter) * zoom;
-    QPoint lastKeyPoint = Point3DToQPoint(lastKPoint) + screenCenter;
-    QPoint firstKPoint = lastKeyPoint;
-
-    for (int i = 1; i < keyPoints.size(); i++)
+    if (keyPoints.size() > 0)
     {
-        Point3D nextKPoint = (keyPoints[i] - cameraCenter) * zoom;
-        QPoint nextKeyPoint = Point3DToQPoint(nextKPoint) + screenCenter;
+        Point3D lastKPoint = (keyPoints[0] - cameraCenter) * zoom;
+        QPoint lastKeyPoint = Point3DToQPoint(lastKPoint) + screenCenter;
+        QPoint firstKPoint = lastKeyPoint;
 
-        painter.drawLine(lastKeyPoint, nextKeyPoint);
-        if (i == chosenKeyPoint)
+        for (int i = 1; i < keyPoints.size(); i++)
+        {
+            Point3D nextKPoint = (keyPoints[i] - cameraCenter) * zoom;
+            QPoint nextKeyPoint = Point3DToQPoint(nextKPoint) + screenCenter;
+
+            painter.drawLine(lastKeyPoint, nextKeyPoint);
+            if (i == chosenKeyPoint)
+            {
+                auxiliaryPen.setColor(Qt::green);
+                painter.setPen(auxiliaryPen);
+            }
+            painter.drawArc(QRect{nextKeyPoint - QPoint{6, 6}, nextKeyPoint + QPoint{6, 6},}, 0, 5760); //full circle
+
+            if (i == chosenKeyPoint)
+            {
+                auxiliaryPen.setColor(Qt::black);
+                painter.setPen(auxiliaryPen);
+            }
+            lastKeyPoint = nextKeyPoint;
+        }
+
+        if (chosenKeyPoint == 0)
         {
             auxiliaryPen.setColor(Qt::green);
             painter.setPen(auxiliaryPen);
-        }
-        painter.drawArc(QRect{nextKeyPoint - QPoint{6, 6}, nextKeyPoint + QPoint{6, 6},}, 0, 5760); //full circle
-
-        if (i == chosenKeyPoint)
-        {
+            painter.drawArc(QRect{firstKPoint - QPoint{6, 6}, firstKPoint + QPoint{6, 6},}, 0, 5760); //full circle
             auxiliaryPen.setColor(Qt::black);
             painter.setPen(auxiliaryPen);
+        } else
+        {
+            painter.drawArc(QRect{firstKPoint - QPoint{6, 6}, firstKPoint + QPoint{6, 6},}, 0, 5760); //full circle
         }
-        lastKeyPoint = nextKeyPoint;
+
     }
-
-    if (chosenKeyPoint == 0)
-    {
-        auxiliaryPen.setColor(Qt::green);
-        painter.setPen(auxiliaryPen);
-        painter.drawArc(QRect{firstKPoint - QPoint{6, 6}, firstKPoint + QPoint{6, 6},}, 0, 5760); //full circle
-        auxiliaryPen.setColor(Qt::black);
-        painter.setPen(auxiliaryPen);
-    } else
-    {
-        painter.drawArc(QRect{firstKPoint - QPoint{6, 6}, firstKPoint + QPoint{6, 6},}, 0, 5760); //full circle
-    }
-
-
     // draw polyline
     painter.setPen(mainPen);
-
-    spline.setCntParts(100);
     const auto& pointsV = spline.points();
     Point3D last = pointsV[0];
     for (int i = 1; i < pointsV.size(); ++i)
@@ -227,5 +226,34 @@ void CanvasArea::wheelEvent(QWheelEvent* event)
 void CanvasArea::setAddVertexMode(bool mode)
 {
     addVertexMode = mode;
+    emit addVertexModeChanged(mode);
+}
+
+void CanvasArea::deleteChosenKeyPoint()
+{
+    if (chosenKeyPoint >= 0)
+    {
+        spline.removeKeyPoint(chosenKeyPoint);
+
+        //choose point which next to deleted
+        int sz = spline.keyPoints().size();
+        if ( sz > 0)
+        {
+            if (chosenKeyPoint >= sz)
+            {
+                chosenKeyPoint = sz - 1;
+            }
+        } else
+        {
+            chosenKeyPoint = -1;
+        }
+    }
+    update();
+}
+
+void CanvasArea::updateN(int newN)
+{
+    spline.setCntParts(newN);
+    update();
 }
 
