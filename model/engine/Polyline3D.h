@@ -42,7 +42,7 @@ class Polyline3D
 {
 public:
     explicit Polyline3D(std::vector<Point3D> points);
-    [[nodiscard]] const std::vector<Point3D>& points();
+    [[nodiscard]] const std::vector<Point3D>& points() const;
 
 protected:
     std::vector<Point3D> points_;

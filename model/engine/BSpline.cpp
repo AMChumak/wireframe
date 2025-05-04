@@ -16,7 +16,7 @@ BSpline::BSpline(std::vector<Point3D> keyPoints): Polyline3D(std::vector<Point3D
     updatePoints();
 }
 
-const std::vector<Point3D>& BSpline::keyPoints()
+const std::vector<Point3D>& BSpline::keyPoints() const
 {
     return keyPoints_;
 }

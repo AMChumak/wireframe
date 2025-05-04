@@ -48,7 +48,7 @@ Polyline3D::Polyline3D(std::vector<Point3D> points)
     points_ = std::move(points);
 }
 
-const std::vector<Point3D>& Polyline3D::points()
+const std::vector<Point3D>& Polyline3D::points() const
 {
     return points_;
 }
