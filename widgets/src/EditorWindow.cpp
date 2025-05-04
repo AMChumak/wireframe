@@ -33,6 +33,11 @@ EditorWindow::EditorWindow(QWidget* parent)
 
     kSpinbox = new QSpinBox();
     kSpinbox->installEventFilter(this);
+    kSpinbox->setValue(5);                                                               // todo заменить на чтение из конфига
+    kSpinbox->setRange(4, 200);
+    kSpinbox->setToolTip("Count of B-Spline segments");
+    connect(kSpinbox, SIGNAL(valueChanged(int)), canvasArea, SLOT(updateK(int)));
+
     mSpinbox = new QSpinBox();
     mSpinbox->installEventFilter(this);
     m1Spinbox = new QSpinBox();
@@ -78,6 +83,7 @@ EditorWindow::EditorWindow(QWidget* parent)
     connect(addVertexButton, &QRadioButton::toggled, this, &EditorWindow::onRadioButtonClicked);
     connect(canvasArea, &CanvasArea::addVertexModeChanged, this, &EditorWindow::onAddVertexModeChanged);
     connect(canvasArea, &CanvasArea::openedSettingsForVertex, this, &EditorWindow::openedSettings);
+    connect(canvasArea, &CanvasArea::updatedCntKeyPoints, this, &EditorWindow::onCntKeyPointsChanged);
 
     //window settings
     resize(800, 600);
@@ -186,4 +192,9 @@ void EditorWindow::onPointMenuClosed()
 void EditorWindow::onPointMenuUpdated(double x, double y)
 {
     canvasArea->updateChosenKeyPoint(x,y);
+}
+
+void EditorWindow::onCntKeyPointsChanged(int count)
+{
+    kSpinbox->setValue(count);
 }

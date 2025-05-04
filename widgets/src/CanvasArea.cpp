@@ -134,11 +134,11 @@ void CanvasArea::paintEvent(QPaintEvent* event)
             painter.drawArc(QRect{firstKPoint - QPoint{6, 6}, firstKPoint + QPoint{6, 6},}, 0, 5760); //full circle
             auxiliaryPen.setColor(Qt::black);
             painter.setPen(auxiliaryPen);
-        } else
+        }
+        else
         {
             painter.drawArc(QRect{firstKPoint - QPoint{6, 6}, firstKPoint + QPoint{6, 6},}, 0, 5760); //full circle
         }
-
     }
     // draw polyline
     painter.setPen(mainPen);
@@ -172,16 +172,17 @@ void CanvasArea::mousePressEvent(QMouseEvent* event)
         spline.addKeyPoint(newKPoint + cameraCenter);
         chosenKeyPoint = spline.keyPoints().size() - 1;
         update();
+        emit updatedCntKeyPoints(spline.keyPoints().size());
         return;
     }
 
-    auto &keyPoints = spline.keyPoints();
+    auto& keyPoints = spline.keyPoints();
     for (int i = 0; i < keyPoints.size(); i++)
     {
         Point3D curKPoint = (keyPoints[i] - cameraCenter) * zoom;
         QPoint curKeyPoint = Point3DToQPoint(curKPoint) + screenCenter;
         QPoint dist = curKeyPoint - event->pos();
-        if (dist.x() * dist.x() + dist.y() *dist.y() <= 36)
+        if (dist.x() * dist.x() + dist.y() * dist.y() <= 36)
         {
             chosenKeyPoint = i;
             break;
@@ -231,27 +232,32 @@ void CanvasArea::setAddVertexMode(bool mode)
 
 void CanvasArea::deleteChosenKeyPoint()
 {
+    if (spline.keyPoints().size() <= 4)
+        return;
+
     if (chosenKeyPoint >= 0)
     {
         spline.removeKeyPoint(chosenKeyPoint);
 
         //choose point which next to deleted
         int sz = spline.keyPoints().size();
-        if ( sz > 0)
+        if (sz > 0)
         {
             if (chosenKeyPoint >= sz)
             {
                 chosenKeyPoint = sz - 1;
             }
-        } else
+        }
+        else
         {
             chosenKeyPoint = -1;
         }
     }
     update();
+    emit updatedCntKeyPoints(spline.keyPoints().size());
 }
 
-void CanvasArea::updateN(int newN)
+void CanvasArea::updateN(const int &newN)
 {
     spline.setCntParts(newN);
     update();
@@ -261,14 +267,14 @@ void CanvasArea::mouseDoubleClickEvent(QMouseEvent* event)
 {
     QPoint screenCenter = QPoint(this->size().width() / 2, this->size().height() / 2);
     chosenKeyPoint = -1;
-    auto &keyPoints = spline.keyPoints();
+    auto& keyPoints = spline.keyPoints();
     int x = 0, y = 0;
     for (int i = 0; i < keyPoints.size(); i++)
     {
         Point3D curKPoint = (keyPoints[i] - cameraCenter) * zoom;
         QPoint curKeyPoint = Point3DToQPoint(curKPoint) + screenCenter;
         QPoint dist = curKeyPoint - event->pos();
-        if (dist.x() * dist.x() + dist.y() *dist.y() <= 36)
+        if (dist.x() * dist.x() + dist.y() * dist.y() <= 36)
         {
             chosenKeyPoint = i;
             x = curKeyPoint.x();
@@ -280,12 +286,30 @@ void CanvasArea::mouseDoubleClickEvent(QMouseEvent* event)
     if (chosenKeyPoint < 0)
         return;
     emit openedSettingsForVertex(keyPoints[chosenKeyPoint].x, keyPoints[chosenKeyPoint].y, x, y);
-
 }
 
 void CanvasArea::updateChosenKeyPoint(double x, double y)
 {
     spline.updateKeyPoint(chosenKeyPoint, x, y, 0);
+    update();
+}
+
+void CanvasArea::updateK(const int &newK)
+{
+    auto& keyPoints = spline.keyPoints();
+
+    int i = 1;
+    while (keyPoints.size() < newK)
+    {
+        spline.addKeyPoint(keyPoints.back() + Point3D{10.0 * i,0,0});
+        ++i;
+    }
+
+    while (keyPoints.size() > newK)
+    {
+        spline.removeKeyPoint(keyPoints.size() - 1);
+    }
+
     update();
 }
 
@@ -303,18 +327,18 @@ void CanvasArea::zoomOut()
 
 void CanvasArea::zoomReset()
 {
-    auto &keyPoints = spline.keyPoints();
-    auto &points = spline.points();
+    auto& keyPoints = spline.keyPoints();
+    auto& points = spline.points();
 
     if (keyPoints.size() == 0)
     {
         zoom = 10.0;
-        cameraCenter = {0,0,0};
+        cameraCenter = {0, 0, 0};
         update();
         return;
     }
 
-    Point3D minSize{0,0,0};
+    Point3D minSize{0, 0, 0};
     double sidesRatio = (double)size().height() / size().width();
     for (int i = 0; i < keyPoints.size(); i++)
     {
@@ -355,7 +379,7 @@ void CanvasArea::zoomReset()
             minSize.x = minSize.y / sidesRatio;
         }
     }
-    zoom = size().width() / (2*minSize.x) / 1.2;
-    cameraCenter = {0,0,0};
+    zoom = size().width() / (2 * minSize.x) / 1.2;
+    cameraCenter = {0, 0, 0};
     update();
 }

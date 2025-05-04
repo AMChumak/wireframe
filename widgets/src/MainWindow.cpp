@@ -65,7 +65,7 @@ void MainWindow::resetAxis()
 
 void MainWindow::about()
 {
-    auto *aboutWindow = new AboutWindow(this);
+    auto *aboutWindow = new AboutWindow();
     QRect rect = geometry();
     aboutWindow->move(
         rect.width() / 2 - aboutWindow->width() / 2,

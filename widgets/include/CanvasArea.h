@@ -24,6 +24,7 @@ public:
 signals:
     void addVertexModeChanged(bool mode);
     void openedSettingsForVertex(double x, double y, int j, int i);
+    void updatedCntKeyPoints(int cnt);
 
 public slots:
     void resizeEvent(QResizeEvent* event) override;
@@ -34,9 +35,10 @@ public slots:
     void wheelEvent(QWheelEvent* event) override;
     void setAddVertexMode(bool mode);
     void deleteChosenKeyPoint();
-    void updateN(int newN);
+    void updateN(const int &newN);
     void mouseDoubleClickEvent(QMouseEvent* event) override;
     void updateChosenKeyPoint(double x, double y);
+    void updateK(const int &newK);
 
 private:
     //elements of canvas

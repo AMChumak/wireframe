@@ -46,6 +46,7 @@ private slots:
     void onAddVertexModeChanged(bool mode);
     void onPointMenuClosed();
     void onPointMenuUpdated(double x, double y);
+    void onCntKeyPointsChanged(int count);
 
 private:
     QWidget* window;
