@@ -7,6 +7,7 @@
 #include <QVBoxLayout>
 #include <QSpinBox>
 #include <QPushButton>
+#include <QRadioButton>
 
 #include "CanvasArea.h"
 
@@ -35,6 +36,7 @@ private slots:
     void zoomIn();
     void zoomOut();
     void zoomReset();
+    void onRadioButtonClicked(bool checked);
 
 private:
     QWidget* window;
@@ -55,4 +57,5 @@ private:
     QPushButton* zoomOutButton;
     QPushButton* zoomResetButton;
     QPushButton* okButton;
+    QRadioButton* addVertexButton;
 };

@@ -4,6 +4,7 @@
 #include <QWidget>
 #include <QPen>
 
+#include "BSpline.h"
 #include "Polyline3D.h"
 
 
@@ -24,6 +25,7 @@ public slots:
     void mouseMoveEvent(QMouseEvent* event) override;
     void mouseReleaseEvent(QMouseEvent* event) override;
     void wheelEvent(QWheelEvent* event) override;
+    void setAddVertexMode(bool mode);
 
 private:
 
@@ -34,6 +36,7 @@ private:
     QPen axisYPen;
     QPen mainPen;
     QPen auxiliaryPen;
+    BSpline spline;
 
     //elements of camera
     Point3D cameraCenter{};
@@ -45,6 +48,8 @@ private:
 
     //interactive flags
     bool mousePressed_{};
+    bool addVertexMode{};
 
 
 };
+

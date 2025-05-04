@@ -12,6 +12,7 @@ using Eigen::Vector4d;
 
 class BSpline: public Polyline3D {
     public:
+    explicit BSpline();
     explicit BSpline(std::vector<Point3D> keyPoints);
     [[nodiscard]]const std::vector<Point3D> &keyPoints();
     void addKeyPoint(const Point3D& point);

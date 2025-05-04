@@ -29,6 +29,9 @@ EditorWindow::EditorWindow(QWidget* parent)
     zoomResetButton = new QPushButton("zoom reset");
     zoomResetButton->setIcon(QIcon(":/resources/zoom_reset.png"));
 
+    addVertexButton = new QRadioButton("add vertex");
+    addVertexButton->setIcon(QIcon(":/resources/add.svg"));
+
     countersLayout->addWidget(labelN);
     countersLayout->addWidget(nSpinbox);
     countersLayout->addWidget(labelK);
@@ -39,6 +42,7 @@ EditorWindow::EditorWindow(QWidget* parent)
     countersLayout->addWidget(m1Spinbox);
 
     buttonsLayout->addWidget(okButton);
+    buttonsLayout->addWidget(addVertexButton);
     buttonsLayout->addWidget(zoomInButton);
     buttonsLayout->addWidget(zoomResetButton);
     buttonsLayout->addWidget(zoomOutButton);
@@ -50,6 +54,12 @@ EditorWindow::EditorWindow(QWidget* parent)
 
     setLayout(mainLayout);
 
+
+    //connections
+    connect(addVertexButton, &QRadioButton::toggled, this, &EditorWindow::onRadioButtonClicked);
+
+
+    //window settings
     resize(800, 600);
     setWindowTitle("Wireframe Editor");
 }
@@ -75,6 +85,11 @@ void EditorWindow::zoomOut()
 
 void EditorWindow::zoomReset()
 {
+}
+
+void EditorWindow::onRadioButtonClicked(bool checked)
+{
+    canvasArea->setAddVertexMode(checked);
 }
 
 

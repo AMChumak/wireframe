@@ -4,6 +4,12 @@
 
 #include "BSpline.h"
 
+#include <iostream>
+
+BSpline::BSpline(): Polyline3D(std::vector<Point3D>())
+{
+}
+
 BSpline::BSpline(std::vector<Point3D> keyPoints): Polyline3D(std::vector<Point3D>())
 {
     keyPoints_ = std::move(keyPoints);
@@ -55,6 +61,9 @@ int BSpline::getCntParts() const
 void BSpline::updatePoints()
 {
     points_.clear();
+    if (keyPoints_.size() < 4)
+        return;
+
     for (int i = 1; i < keyPoints_.size() - 2; i++)
     {
         Vector4d xVector = { keyPoints_[i-1].x, keyPoints_[i].x , keyPoints_[i+1].x , keyPoints_[i+2].x};
@@ -68,9 +77,9 @@ void BSpline::updatePoints()
             Vector4d timeVector = {t*t*t, t*t, t , 1};
 
 
-            point.x = (timeVector.transpose() * coefficients * xVector).value();
-            point.y = (timeVector.transpose() * coefficients * yVector).value();
-            point.z = (timeVector.transpose() * coefficients * zVector).value();
+            point.x = (timeVector.transpose() * coefficients * xVector).value() / 6;
+            point.y = (timeVector.transpose() * coefficients * yVector).value() / 6;
+            point.z = (timeVector.transpose() * coefficients * zVector).value() / 6;
             points_.push_back(point);
         }
     }
