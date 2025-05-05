@@ -26,6 +26,7 @@ MainWindow::MainWindow(QWidget *parent)
     createToolBar();
     setWindowTitle("AMC Wireframe");
     setMinimumSize(640, 480);
+    newFile();
 }
 
 void MainWindow::resizeEvent(QResizeEvent *event)
@@ -41,7 +42,17 @@ void MainWindow::mouseMoveEvent(QMouseEvent *event)
 
 void MainWindow::newFile()
 {
-
+    configKeeper = new ConfigKeeper();
+    renderArea->onSetFormingLine(configKeeper->spline);
+    renderArea->resetRotation();
+    renderArea->setZoom(configKeeper->zForward);
+    if (editorWindow != nullptr)
+    {
+        editorWindow->onSetSpline(configKeeper->spline);
+        editorWindow->onSetCamera(configKeeper->cameraCenter, configKeeper->cameraZoom);
+        editorWindow->onSetM(configKeeper->M);
+        editorWindow->onSetM1(configKeeper->M1);
+    }
 }
 void MainWindow::open()
 {
@@ -54,8 +65,15 @@ void MainWindow::save()
 
 void MainWindow::openEditor()
 {
-    editorWindow = new EditorWindow(this);
-    editorWindow->show();
+    if (editorWindow == nullptr)
+    {
+        editorWindow = new EditorWindow(this);
+        editorWindow->show();
+        connect (editorWindow, SIGNAL(editorClosed()), this, SLOT(onEditorClosed()));
+        connect (editorWindow, SIGNAL(MChanged(int)), renderArea, SLOT(onMUpdated(int)));
+        connect (editorWindow, SIGNAL(M1Changed(int)), renderArea, SLOT(onM1Updated(int)));
+        connect (editorWindow, SIGNAL(splineChanged(BSpline)), renderArea, SLOT(onSetFormingLine(BSpline)));
+    }
 }
 
 void MainWindow::resetAxis()

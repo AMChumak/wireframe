@@ -16,6 +16,8 @@ public:
     QSize minimumSizeHint() const override;
     QSize sizeHint() const override;
 
+    void setZoom(double zoom);
+
 
 signals:
     void mousePressed(const QPoint &pos);
@@ -24,13 +26,13 @@ signals:
 public slots:
     void mousePressEvent(QMouseEvent *event) override;
     void mouseMoveEvent(QMouseEvent *event) override;
-    void initFile();
-    void loadFile(const QString &fileName);
-    void saveFile(const QString &fileName);
     void resizeScreen(const QSize &size);
     void wheelEvent(QWheelEvent *event) override;
     void mouseReleaseEvent(QMouseEvent* event) override;
     void resetRotation();
+    void onMUpdated(int m);
+    void onM1Updated(int m1);
+    void onSetFormingLine(BSpline formingLine);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -44,7 +46,7 @@ private:
     QPen pen;
     Wireframe *wireframe;
     Camera *camera;
-    std::vector<std::pair<Point3D, Point3D>> wireframeLines;
+    std::vector<std::pair<Point3D, Point3D>> wireframeLines{};
 
     bool mousePressed_{};
     Point3D lastPointPos{-10,-10,-10};

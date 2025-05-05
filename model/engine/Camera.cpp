@@ -81,10 +81,17 @@ void Camera::updateSizes(double width, double height)
 void Camera::zoom(double zoom)
 {
     zForward_ *= zoom;
-    if (zForward_ >= 9.7)
+    if (zForward_ >= 8.9)
     {
-        zForward_ = 9.7;
+        zForward_ = 8.9;
     }
+    std::cout << zForward_ << std::endl;
+    updateProjection();
+}
+
+void Camera::setZoom(double zoom)
+{
+    zForward_ = zoom;
     updateProjection();
 }
 

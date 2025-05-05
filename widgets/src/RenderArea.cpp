@@ -10,16 +10,10 @@ RenderArea::RenderArea(QWidget* parent)
     : QWidget(parent)
 {
     setMouseTracking(true);
-    initFile();
     width_ = 4;
-    double height = 9.0 / 16.0 * width_;
+    double height = 6.0 / 8.0 * width_;
     camera = new Camera(width_, height, 9, 12);
-
-    std::vector<Point3D> points = {{0, 0, 0}, {1, 2, 0}, {4, 3, 0}, {6, -1, 0}, {10, 2, 0}};
-    BSpline example{points};
-    example.setCntParts(10);
-    wireframe = new Wireframe(example);
-    wireframeLines = camera->render(wireframe->getTransform(), wireframe->getPolylines());
+    wireframe = new Wireframe();
 }
 
 QSize RenderArea::minimumSizeHint() const
@@ -32,19 +26,11 @@ QSize RenderArea::sizeHint() const
     return QSize(402, 402);
 }
 
-void RenderArea::initFile()
+void RenderArea::setZoom(double zoom)
 {
+    camera->setZoom(zoom);
+    wireframeLines = camera->render(wireframe->getTransform(), wireframe->getPolylines());
     update();
-}
-
-void RenderArea::loadFile(const QString& fileName)
-{
-    update();
-}
-
-void RenderArea::saveFile(const QString& fileName)
-{
-    //todo сделать менеджер файлов, подготовить файл, запустить виджет сохранения для файла
 }
 
 void RenderArea::resizeScreen(const QSize& size)
@@ -61,7 +47,7 @@ void RenderArea::wheelEvent(QWheelEvent* event)
 {
     if (event->angleDelta().y() > 0)
     {
-        camera->zoom(1.1);
+        camera->zoom(1.05);
     }
     else
     {
@@ -140,6 +126,27 @@ void RenderArea::drawWireframe(QPainter* painter)
 void RenderArea::resetRotation()
 {
     wireframe->resetRotation();
+    wireframeLines = camera->render(wireframe->getTransform(), wireframe->getPolylines());
+    update();
+}
+
+void RenderArea::onMUpdated(int m)
+{
+    wireframe->setCntFormingLines(m);
+    wireframeLines = camera->render(wireframe->getTransform(), wireframe->getPolylines());
+    update();
+}
+
+void RenderArea::onM1Updated(int m1)
+{
+    wireframe->setCntPartsInSegment(m1);
+    wireframeLines = camera->render(wireframe->getTransform(), wireframe->getPolylines());
+    update();
+}
+
+void RenderArea::onSetFormingLine(BSpline formingLine)
+{
+    wireframe->setForming(formingLine);
     wireframeLines = camera->render(wireframe->getTransform(), wireframe->getPolylines());
     update();
 }

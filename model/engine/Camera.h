@@ -15,6 +15,7 @@ public:
     std::vector <std::pair<Point3D, Point3D>> render(const Matrix4d &prescaling,const std::vector<Polyline3D> &polylines) const;
     void updateSizes(double width, double height);
     void zoom(double zoom);
+    void setZoom(double zoom);
     Point3D findPointOnSphere(const Point3D& point) const;
 
 private:

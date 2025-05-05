@@ -173,6 +173,7 @@ void CanvasArea::mousePressEvent(QMouseEvent* event)
         chosenKeyPoint = spline.keyPoints().size() - 1;
         update();
         emit updatedCntKeyPoints(spline.keyPoints().size());
+        emit updatedSpline(spline);
         return;
     }
 
@@ -205,6 +206,7 @@ void CanvasArea::mouseMoveEvent(QMouseEvent* event)
         updatedPoint += QPointToPoint3D(event->pos() - startMovePosition) / zoom;
         spline.updateKeyPoint(chosenKeyPoint, updatedPoint);
         startMovePosition = event->pos();
+        emit updatedSpline(spline);
     }
     update();
 }
@@ -255,11 +257,13 @@ void CanvasArea::deleteChosenKeyPoint()
     }
     update();
     emit updatedCntKeyPoints(spline.keyPoints().size());
+    emit updatedSpline(spline);
 }
 
 void CanvasArea::updateN(const int &newN)
 {
     spline.setCntParts(newN);
+    emit updatedSpline(spline);
     update();
 }
 
@@ -291,6 +295,7 @@ void CanvasArea::mouseDoubleClickEvent(QMouseEvent* event)
 void CanvasArea::updateChosenKeyPoint(double x, double y)
 {
     spline.updateKeyPoint(chosenKeyPoint, x, y, 0);
+    emit updatedSpline(spline);
     update();
 }
 
@@ -310,6 +315,7 @@ void CanvasArea::updateK(const int &newK)
         spline.removeKeyPoint(keyPoints.size() - 1);
     }
 
+    emit updatedSpline(spline);
     update();
 }
 
@@ -381,5 +387,19 @@ void CanvasArea::zoomReset()
     }
     zoom = size().width() / (2 * minSize.x) / 1.2;
     cameraCenter = {0, 0, 0};
+    update();
+}
+
+void CanvasArea::setSpline(BSpline spline)
+{
+    this->spline = spline;
+    emit updatedSpline(spline);
+    update();
+}
+
+void CanvasArea::setCamera(const Point3D& camera, const double zoom)
+{
+    this->cameraCenter = camera;
+    this->zoom = zoom;
     update();
 }

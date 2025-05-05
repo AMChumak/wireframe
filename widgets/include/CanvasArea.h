@@ -21,10 +21,14 @@ public:
     void zoomOut();
     void zoomReset();
 
+    void setSpline(BSpline spline);
+    void setCamera(const Point3D& camera, double zoom);
+
 signals:
     void addVertexModeChanged(bool mode);
     void openedSettingsForVertex(double x, double y, int j, int i);
     void updatedCntKeyPoints(int cnt);
+    void updatedSpline(BSpline spline);
 
 public slots:
     void resizeEvent(QResizeEvent* event) override;
@@ -39,6 +43,7 @@ public slots:
     void mouseDoubleClickEvent(QMouseEvent* event) override;
     void updateChosenKeyPoint(double x, double y);
     void updateK(const int &newK);
+
 
 private:
     //elements of canvas

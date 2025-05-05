@@ -8,6 +8,11 @@
 using Eigen::Vector3d;
 using Eigen::Matrix4d;
 
+Wireframe::Wireframe()
+{
+    rotation = Matrix4d::Identity();
+}
+
 Wireframe::Wireframe(const BSpline& forming)
 {
     rotation = Matrix4d::Identity();
@@ -54,6 +59,10 @@ std::vector<Polyline3D> Wireframe::getPolylines() const
     //get all forming polylines
     std::vector<Polyline3D> polylines;
     const auto& kPoints = forming_.keyPoints();
+    if (kPoints.size() == 0)
+    {
+        return polylines;
+    }
     for (int i = 0; i < cntFormingLines_; i++)
     {
         using std::sin, std::cos;
@@ -161,4 +170,15 @@ void Wireframe::updateShiftScale()
     Eigen::Matrix4d shift{{1, 0, 0, -(dims.xmax + dims.xmin) / 2}, {0, 1, 0, 0}, {0, 0, 1, 0}, {0, 0, 0, maxSize}};
     shiftScaling = shift / maxSize;
     transform = rotation * shiftScaling;
+}
+
+
+inline int Wireframe::getPartsInSegment() const
+{
+    return cntPartsInSegments_;
+}
+
+inline int Wireframe::getCntFormingLines() const
+{
+    return cntFormingLines_;
 }

@@ -1,5 +1,6 @@
 #include "EditorWindow.h"
 
+#include <iostream>
 #include <qevent.h>
 #include <QLabel>
 
@@ -40,9 +41,20 @@ EditorWindow::EditorWindow(QWidget* parent)
 
     mSpinbox = new QSpinBox();
     mSpinbox->installEventFilter(this);
+    mSpinbox->setValue(2);                                                               // todo заменить на чтение из конфига
+    mSpinbox->setRange(2, 36);
+    mSpinbox->setToolTip("Count of forming lines in wireframe");
+    connect(mSpinbox, SIGNAL(valueChanged(int)), this, SLOT(onMChanged(int)));
+
     m1Spinbox = new QSpinBox();
     m1Spinbox->installEventFilter(this);
+    m1Spinbox->setValue(1);                                                               // todo заменить на чтение из конфига
+    m1Spinbox->setRange(1, 36);
+    m1Spinbox->setToolTip("Count of parts in arc");
+    connect(m1Spinbox, SIGNAL(valueChanged(int)), this, SLOT(onM1Changed(int)));
+
     okButton = new QPushButton("OK");
+
     zoomInButton = new QPushButton("zoom in");
     zoomInButton->setIcon(QIcon(":/resources/zoom_in.png"));
     connect(zoomInButton, SIGNAL(clicked()), this, SLOT(zoomIn()));
@@ -84,6 +96,7 @@ EditorWindow::EditorWindow(QWidget* parent)
     connect(canvasArea, &CanvasArea::addVertexModeChanged, this, &EditorWindow::onAddVertexModeChanged);
     connect(canvasArea, &CanvasArea::openedSettingsForVertex, this, &EditorWindow::openedSettings);
     connect(canvasArea, &CanvasArea::updatedCntKeyPoints, this, &EditorWindow::onCntKeyPointsChanged);
+    connect(canvasArea, &CanvasArea::updatedSpline, this, &EditorWindow::onSplineChanged);
 
     //window settings
     resize(800, 600);
@@ -113,8 +126,11 @@ bool EditorWindow::eventFilter(QObject* watched, QEvent* event)
     return QWidget::eventFilter(watched, event);
 }
 
-void EditorWindow::closeEditor()
+
+void EditorWindow::closeEvent(QCloseEvent* event)
 {
+    emit editorClosed();
+    QWidget::closeEvent(event);
 }
 
 void EditorWindow::keyPressEvent(QKeyEvent* event)
@@ -149,6 +165,30 @@ void EditorWindow::openedSettings(double x, double y, int j, int i)
     connect(pointMenu, &PointMenu::onCLose, this, &EditorWindow::onPointMenuClosed);
     connect(pointMenu, &PointMenu::valueUpdated, this, &EditorWindow::onPointMenuUpdated);
     pointMenu->show();
+}
+
+void EditorWindow::onSetSpline(BSpline spline)
+{
+    canvasArea->setSpline(spline);
+    kSpinbox->setValue(spline.keyPoints().size());
+    nSpinbox->setValue(spline.getCntParts());
+}
+
+void EditorWindow::onSetCamera(Point3D camera, double zoom)
+{
+    canvasArea->setCamera(camera, zoom);
+}
+
+void EditorWindow::onSetM1(int m1)
+{
+    m1Spinbox->setValue(m1);
+    emit M1Changed(m1);
+}
+
+void EditorWindow::onSetM(int m)
+{
+    mSpinbox->setValue(m);
+    emit MChanged(m);
 }
 
 void EditorWindow::resizeEvent(QResizeEvent* event)
@@ -197,4 +237,19 @@ void EditorWindow::onPointMenuUpdated(double x, double y)
 void EditorWindow::onCntKeyPointsChanged(int count)
 {
     kSpinbox->setValue(count);
+}
+
+void EditorWindow::onMChanged(int m)
+{
+    emit MChanged(m);
+}
+
+void EditorWindow::onM1Changed(int m1)
+{
+    emit M1Changed(m1);
+}
+
+void EditorWindow::onSplineChanged(BSpline spline)
+{
+    emit splineChanged(spline);
 }

@@ -27,6 +27,8 @@ public:
     void resetRotation();
     void setCntFormingLines(const int &newM);
     void setCntPartsInSegment(const int &newM1);
+    int getPartsInSegment() const;
+    int getCntFormingLines() const;
 private:
     void updateShiftScale();
     Dimensions getDimensions() const; //returns Xmin, Ymin, Zmin, Xmax,Ymax, Zmax
@@ -35,7 +37,9 @@ private:
     Eigen::Matrix4d shiftScaling;
     Matrix4d rotation;
     Eigen::Matrix4d transform;
-    BSpline forming_;
+    BSpline forming_{};
     int cntFormingLines_ = 2;
     int cntPartsInSegments_ = 1;
 };
+
+

@@ -29,13 +29,21 @@ protected:
     bool eventFilter(QObject* watched, QEvent* event) override;
 
 signals:
-    void onCloseEditor();
+    void editorClosed();
+    void MChanged(int m);
+    void M1Changed(int m1);
+    void splineChanged(BSpline spline);
 
 public slots:
-    void closeEditor();
+    void closeEvent(QCloseEvent* event) override;
     void keyPressEvent(QKeyEvent* event) override;
     void keyReleaseEvent(QKeyEvent* event) override;
     void openedSettings(double x, double y, int j, int i);
+    void onSetSpline(BSpline spline);
+    void onSetCamera(Point3D camera, double zoom);
+    void onSetM1(int m1);
+    void onSetM(int m);
+
 
 private slots:
     void resizeEvent(QResizeEvent* event) override;
@@ -47,6 +55,9 @@ private slots:
     void onPointMenuClosed();
     void onPointMenuUpdated(double x, double y);
     void onCntKeyPointsChanged(int count);
+    void onMChanged(int m);
+    void onM1Changed(int m1);
+    void onSplineChanged(BSpline spline);
 
 private:
     QWidget* window;

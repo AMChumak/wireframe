@@ -6,6 +6,7 @@
 
 #include "EditorWindow.h"
 #include "RenderArea.h"
+#include "../../model/config/ConfigKeeper.h"
 
 #if defined MAKE_UI_LIB
 #define UI_LIB_EXPORT Q_DECL_EXPORT
@@ -34,6 +35,8 @@ private slots:
 
     void onCanvasPressed(const QPoint &point);
     void onMouseMovedOverCanvas(const QPoint &point);
+    void onEditorClosed();
+
 
 private:
     void createActions();
@@ -54,5 +57,11 @@ private:
     QAction *aboutAct{};
     QToolBar *mainToolBar{};
     RenderArea *renderArea{};
-    EditorWindow *editorWindow;
+    EditorWindow *editorWindow{};
+    ConfigKeeper *configKeeper{};
 };
+
+inline void MainWindow::onEditorClosed()
+{
+    editorWindow = nullptr;
+}

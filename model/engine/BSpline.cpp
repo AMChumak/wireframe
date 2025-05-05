@@ -6,7 +6,7 @@
 
 #include <iostream>
 
-BSpline::BSpline(): Polyline3D(std::vector<Point3D>())
+BSpline::BSpline(): Polyline3D(std::vector<Point3D>()), keyPoints_(std::vector<Point3D>())
 {
 }
 
@@ -56,6 +56,12 @@ void BSpline::setCntParts(int cntParts)
 int BSpline::getCntParts() const
 {
     return cntParts_;
+}
+
+void BSpline::setKeyPoints(const std::vector<Point3D>& keyPoints)
+{
+    keyPoints_ = keyPoints;
+    updatePoints();
 }
 
 void BSpline::updatePoints()
