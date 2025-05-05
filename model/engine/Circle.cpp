@@ -57,7 +57,7 @@ void Circle::updatePoints()
     for (int i = 0; i <= totalCnt; i++)
     {
         using std::sin, std::cos;
-        double phi = i / totalCnt * M_PI * 2;
+        double phi = (double)i / totalCnt * M_PI * 2;
         Matrix3d rotation {{1, 0, 0}, {0, cos(phi), -sin(phi)}, {0, sin(phi), cos(phi)}};
         Vector3d result = rotation * startVector;
         Point3D point{result.x(), result.y(), result.z()};

@@ -3,6 +3,9 @@
 #include <QPainter>
 #include <QScrollArea>
 
+#include "Camera.h"
+#include "Wireframe.h"
+
 class RenderArea final : public QWidget
 {
     Q_OBJECT
@@ -30,5 +33,13 @@ protected:
     void paintEvent(QPaintEvent *event) override;
 
 private:
+    void drawWireframe(QPainter *painter);
+
+private:
+    double width_ = 1;
     QImage screen;
+    QPen pen;
+    Wireframe *wireframe;
+    Camera *camera;
+    std::vector<std::pair<Point3D, Point3D>> wireframeLines;
 };
