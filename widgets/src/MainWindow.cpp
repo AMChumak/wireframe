@@ -60,7 +60,7 @@ void MainWindow::openEditor()
 
 void MainWindow::resetAxis()
 {
-
+    renderArea->resetRotation();
 }
 
 void MainWindow::about()

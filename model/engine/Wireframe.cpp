@@ -67,7 +67,7 @@ std::vector<Polyline3D> Wireframe::getPolylines() const
             Point3D rKeypoint{result.x(), result.y(), result.z()};
             nextKPoints.push_back(rKeypoint);
         }
-        BSpline spline {nextKPoints};
+        BSpline spline{nextKPoints};
         spline.setCntParts(forming_.getCntParts());
         polylines.push_back(spline);
     }
@@ -110,11 +110,19 @@ void Wireframe::addRotation(const Point3D& start, const Point3D& end)
     //2. Находим угол вращения
     double cosA = a.dot(b) / (a.norm() * b.norm());
     double sinA = norm.norm() / (a.norm() * b.norm());
-
     //3. Находим матрицу вращения
-    Matrix3d dual{{0, -norm.z(), norm.y()}, {norm.z(), 0, -norm.x()}, {-norm.y(), norm.x(), 0}};
-    Matrix3d vvt = norm * norm.transpose();
-    Matrix3d addRot = vvt + (Matrix3d::Identity() - vvt) * cosA + dual * sinA;
+    double cosr = 1 - cosA;
+    norm.normalize();
+    double x = norm.x();
+    double y = norm.y();
+    double z = norm.z();
+    Matrix3d addRot{
+        {
+            x * x * cosr + cosA, x * y * cosr - z * sinA, x * z * cosr + y * sinA
+        },
+        {x * y * cosr + z * sinA, y * y * cosr + cosA, y * z * cosr - x * sinA},
+        {x * z * cosr - y * sinA, y * z * cosr + x * sinA, z * z * cosr + cosA}
+    };
 
     Matrix4d rot4d{
         {addRot(0, 0), addRot(0, 1), addRot(0, 2), 0},
@@ -127,13 +135,13 @@ void Wireframe::addRotation(const Point3D& start, const Point3D& end)
 
     rotation = rot4d * rotation;
 
-
     transform = rotation * shiftScaling;
 }
 
 void Wireframe::resetRotation()
 {
     rotation.setIdentity();
+    transform = rotation * shiftScaling;
 }
 
 void Wireframe::setCntFormingLines(const int& newM)
