@@ -62,6 +62,21 @@ void RenderArea::resizeScreen(const QSize &size)
     wireframeLines = camera->render(wireframe->getTransform(),wireframe->getPolylines());
     update();
 }
+
+void RenderArea::wheelEvent(QWheelEvent* event)
+{
+    if (event->angleDelta().y() > 0)
+    {
+        camera->zoom(1.1);
+    } else
+    {
+        camera->zoom(0.9090909);
+    }
+    wireframeLines = camera->render(wireframe->getTransform(),wireframe->getPolylines());
+    update();
+    QWidget::wheelEvent(event);
+}
+
 void RenderArea::paintEvent(QPaintEvent *event)
 {
     QPainter painter(this);

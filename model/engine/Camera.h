@@ -14,6 +14,7 @@ public:
     explicit Camera(double width, double height, double zForward, double zBack);
     std::vector <std::pair<Point3D, Point3D>> render(const Matrix4d &prescaling,const std::vector<Polyline3D> &polylines) const;
     void updateSizes(double width, double height);
+    void zoom(double zoom);
 
 private:
     void updateProjection();

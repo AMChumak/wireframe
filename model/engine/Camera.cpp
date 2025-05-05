@@ -77,6 +77,16 @@ void Camera::updateSizes(double width, double height)
     updateProjection();
 }
 
+void Camera::zoom(double zoom)
+{
+    zForward_ *= zoom;
+    if (zForward_ >= 10.0)
+    {
+        zForward_ = 9.999;
+    }
+    updateProjection();
+}
+
 void Camera::updateProjection()
 {
     Matrix4d shift {{1,0,0,0},{0,1,0,0},{0,0,1,-(position_.z)},{0,0,0,1}};

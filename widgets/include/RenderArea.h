@@ -28,6 +28,7 @@ public slots:
     void loadFile(const QString &fileName);
     void saveFile(const QString &fileName);
     void resizeScreen(const QSize &size);
+    void wheelEvent(QWheelEvent *event) override;
 
 protected:
     void paintEvent(QPaintEvent *event) override;
