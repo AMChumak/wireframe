@@ -1,82 +1,96 @@
-## AMC Paint
+## AMC Wireframe
 
-### Author: 
+### Author:
 
-Anton Chumak aka [@AMChumak](https://github.com/AMChumak). Student of FIT NSU, programmer, 
-3D modeler, cyclist, just a nice guy!  
-    
+Anton Chumak aka [@AMChumak](https://github.com/AMChumak). Student of FIT NSU, programmer,
+3D modeler, cyclist, just a nice guy!
 
 ## About program
 
-AMC Paint is a multi-tool graphic editor. You can use it to open and edit images in .png, .jpg, .bmp, and .gif formats.
-Saving in .png format is available.
+AMC Wireframe - modern rotation shape editor. It allows you to create 
+shaping B-splines and view models in a 3d viewer.
 
 ## Structure
 
-The main application window contains a canvas, a toolbar, and a menu.
+The application contains of 2 windows: [3D Viewer](#3d-viewer) and [Forming shape editor](#forming-shape-editor).
 
-### Canvas
-
-The canvas is used for displaying and editing images. 
-The canvas size can be changed using the `Edit->resize` menu option. 
-If the canvas does not fit completely into the screen, 
-you can use the scroll bars on the right and bottom of the screen to move around the canvas.
+### 3D Viewer
+There you can see 3D model. Use wheel to zoom in and zoom out. 
+Drag points on model with pressed mouse button to rotate it in space.
 
 ### Toolbar
 
 The toolbar is used for quick access to the editor's functions.
-The functions are divided into 3 main groups: 
-[File options](#file-options), [Graphic tools](#graphic-tools), and [Pen settings](#pen-settings).
+The functions are divided into 2 main groups:
+[File options](#file-options) and [Edit tools](#graphic-tools).
 
 #### File options
+
 - **New file** `Creates new session`
-- **Open file** `Opens an existing image file in one of the formats (.png, .jpg, .bmp, .gif)`
-- **Save file** `Saves session into file in .png format`
-#### Graphic tools
-- **Line** `Sets line tool. Choose 2 points on the canvas with 2 clicks.`
-- **Fill** `Fills chosen area with chosen color. Use 1 click to set seed pixel of filling`
-- **Clean** `Fills canvas with white color`
-- **Figures** `Draws choosed figure on the canvas. 
-Choose firstly center point and vertex point after that by mouse clicking`
+- **Open file** `Opens an existing image file in .s3d format`
+- **Save file** `Saves session into file in .s3d format`
 
-#### Pen settings
-- **Width** `Opens menu with pen's with setting`
-- **Palette** `Opens dialog with color palette`
-- **Colors** `Sets choosed color as current pen's color`
+#### Edit tools
 
-
-- **About**  `Opens this text :)`
+- **Editor** `Opens forming shape editor`
+- **Reset** `Resets rotation`
 
 ### Menu
 
-The menu contains all the functionality of the application. 
+The menu contains all the functionality of the application.
 It consists of three sections: [File](#file), [Edit](#edit), and [About](#about).
 
 #### File
+
 It contains functions related to working with files:
+
 - **New file** `Creates new session`
 - **Open file** `Opens an existing image file in one of the formats (.png, .jpg, .bmp, .gif)`
 - **Save file** `Saves session into file in .png format`
 
 #### Edit
-It contains functions related to canvas settings, pen settings and choosing graphic tool.
 
-> [!TIP]
-> Current tool is checked in menu/toolbar. 
+It contains functions related to edit model or its appearance.
 
-Canvas settings:
-- **Undo** `"Ctrl+Z" undo action`
-- **Redo** `"Ctrl+Shift+Z" redo action`
-- **Resize** `Resizes canvas`
-
-Pen settings:
-- **Width** `Opens menu with pen's with setting`
-- **Palette** `Opens dialog with color palette`
-
-Tool choosing:
-- **Line** `Sets line tool. Choose 2 points on the canvas with 2 clicks.`
-- **Fill** `Fills chosen area with chosen color. Use 1 click to set seed pixel of filling`
-- **Insert** `Opens menu with settings of figure, that will be pasted on canvas`
+- **Editor** `Opens forming shape editor`
+- **Reset** `Resets rotation`
 
 #### About
+
 - **About**  `Opens this text :)`
+
+
+### Forming shape editor
+
+This window allows you to set forming shape.
+> [HINT] The 3D model is updated online during changes in the editor
+
+#### Main parameters:
+- **N** `Count of points in one segment of B-spline`
+- **K** `Count segments of B-spline`
+- **M** `Count of forming polylines in 3d model`
+- **M1** `Count of points in one arc, that coonects neighbour forming polylines`
+
+#### How to change point position
+- Drag points with mouse
+- Double-click on point and set coordinates in menu
+
+### How to add points
+- Turn on radio button 'add point mode' and when your clicks will create new points
+- Increase parameter K
+
+> [HINT] The 'add point mode' is automatically activated when the control button is pressed.
+
+### How to delete points
+- Choose point and press 'delete'
+- Decrease parameter K
+
+> [HINT] If you delete highlighted point, when highlight will move to next point. 
+> You can delete some next points with multi-click 'delete'.
+
+#### How to zoom
+- Use wheel to change zoom
+- Use buttons in bottom panel 
+
+#### How to move camera
+- Press mouse in free space and move it!

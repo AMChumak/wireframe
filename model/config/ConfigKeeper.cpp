@@ -5,6 +5,7 @@
 #include "ConfigKeeper.h"
 
 #include <fstream>
+#include <iostream>
 #include <nlohmann/json.hpp>
 
 using nlohmann::json;
@@ -91,7 +92,6 @@ std::string ConfigKeeper::loadConfig(const std::string& fileName)
         zForward = config["zf"].get<double>();
         std::vector<double> rotationV = config["rotation"].get<std::vector<double>>();
         rotation = Eigen::Map<Eigen::Matrix4d>(rotationV.data(), 4, 4);
-
     }
     catch (const std::exception& e)
     {

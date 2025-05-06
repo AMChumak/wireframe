@@ -48,6 +48,7 @@ private:
     void createActions();
     void createMenus();
     void createToolBar();
+    void openFile(std::string);
 
 private:
     QWidget *window;

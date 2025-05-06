@@ -21,6 +21,7 @@ MainWindow::MainWindow(QWidget* parent)
     connect(renderArea, SIGNAL(zoomChanged(double)), this, SLOT(renderAreaZoomChanged(double)));
     connect(renderArea, SIGNAL(rotationChanged(Eigen::Matrix4d)), this, SLOT(renderAreaRotationChanged(Eigen::Matrix4d)));
 
+    configKeeper = new ConfigKeeper();
     
     m_layout->addWidget(renderArea);
     window = new QWidget();
@@ -33,7 +34,8 @@ MainWindow::MainWindow(QWidget* parent)
     createToolBar();
     setWindowTitle("AMC Wireframe");
     setMinimumSize(640, 480);
-    newFile();
+    std::string fileName = "../sample.s3d";
+    openFile(fileName);
 }
 
 void MainWindow::resizeEvent(QResizeEvent* event)
@@ -54,6 +56,8 @@ void MainWindow::newFile()
     renderArea->onSetFormingLine(configKeeper->spline);
     renderArea->resetRotation();
     renderArea->setZoom(configKeeper->zForward);
+    renderArea->onM1Updated(configKeeper->M1);
+    renderArea->onMUpdated(configKeeper->M);
     if (editorWindow != nullptr)
     {
         editorWindow->onSetSpline(configKeeper->spline);
@@ -62,14 +66,9 @@ void MainWindow::newFile()
         editorWindow->onSetM1(configKeeper->M1);
     }
 }
-
-void MainWindow::open()
+void MainWindow::openFile(std::string fileName)
 {
-    QString fileName = QFileDialog::getOpenFileName(this);
-    if (fileName.isEmpty()) {
-        return;
-    }
-    std::string errmsgT = configKeeper->loadConfig(fileName.toStdString());
+    std::string errmsgT = configKeeper->loadConfig(fileName);
     if (errmsgT.length() > 0)
     {
         QWidget *errmsg = new QWidget();
@@ -93,6 +92,15 @@ void MainWindow::open()
         editorWindow->onSetM(configKeeper->M);
         editorWindow->onSetM1(configKeeper->M1);
     }
+}
+
+void MainWindow::open()
+{
+    QString fileName = QFileDialog::getOpenFileName(this);
+    if (fileName.isEmpty()) {
+        return;
+    }
+    openFile(fileName.toStdString());
 }
 
 void MainWindow::save()
