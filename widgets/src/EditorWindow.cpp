@@ -3,6 +3,7 @@
 #include <iostream>
 #include <qevent.h>
 #include <QLabel>
+#include <utility>
 
 
 EditorWindow::EditorWindow(QWidget* parent)

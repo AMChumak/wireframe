@@ -70,9 +70,17 @@ void MainWindow::openEditor()
         editorWindow = new EditorWindow(this);
         editorWindow->show();
         connect (editorWindow, SIGNAL(editorClosed()), this, SLOT(onEditorClosed()));
+        connect(editorWindow, SIGNAL(MChanged(int)), this, SLOT(onMChanged(int)));
         connect (editorWindow, SIGNAL(MChanged(int)), renderArea, SLOT(onMUpdated(int)));
+        connect(editorWindow, SIGNAL(M1Changed(int)), this, SLOT(onM1Changed(int)));
         connect (editorWindow, SIGNAL(M1Changed(int)), renderArea, SLOT(onM1Updated(int)));
+        connect(editorWindow, SIGNAL(splineChanged(BSpline)), this, SLOT(onSplineChanged(BSpline)));
         connect (editorWindow, SIGNAL(splineChanged(BSpline)), renderArea, SLOT(onSetFormingLine(BSpline)));
+
+        editorWindow->onSetSpline(configKeeper->spline);
+        editorWindow->onSetCamera(configKeeper->cameraCenter, configKeeper->cameraZoom);
+        editorWindow->onSetM(configKeeper->M);
+        editorWindow->onSetM1(configKeeper->M1);
     }
 }
 
@@ -91,14 +99,6 @@ void MainWindow::about()
     aboutWindow->show();
 }
 
-void MainWindow::onCanvasPressed(const QPoint &point)
-{
-
-}
-void MainWindow::onMouseMovedOverCanvas(const QPoint &point)
-{
-
-}
 
 void MainWindow::createActions()
 {
@@ -161,4 +161,35 @@ void MainWindow::createToolBar()
     mainToolBar->addAction(resetAct);
     mainToolBar->addSeparator();
     mainToolBar->addAction(aboutAct);
+}
+
+
+void MainWindow::onSplineChanged(BSpline spline)
+{
+    configKeeper->spline = std::move(spline);
+}
+
+void MainWindow::onMChanged(int m)
+{
+    configKeeper->M = m;
+}
+
+void MainWindow::onM1Changed(int m)
+{
+    configKeeper->M1 = m;
+}
+
+void MainWindow::onEditorZoomChanged(double z)
+{
+    configKeeper->cameraZoom = z;
+}
+
+void MainWindow::onEditorCameraChanged(const Point3D& point)
+{
+    configKeeper->cameraCenter = point;
+}
+
+void MainWindow::onEditorClosed()
+{
+    editorWindow = nullptr;
 }

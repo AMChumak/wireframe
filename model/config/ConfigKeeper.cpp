@@ -13,7 +13,7 @@ ConfigKeeper::ConfigKeeper()
 {
     M = 2;
     M1 = 1;
-    cameraZoom = 1;
+    cameraZoom = 10;
     cameraCenter = {0, 0, 0};
     rotation = Matrix4d::Identity();
     zForward = 9;

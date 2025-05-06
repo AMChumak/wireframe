@@ -3,6 +3,7 @@
 #include <QMainWindow>
 #include <QToolBar>
 #include <QVBoxLayout>
+#include <utility>
 
 #include "EditorWindow.h"
 #include "RenderArea.h"
@@ -33,9 +34,12 @@ private slots:
     void resetAxis();
     void about();
 
-    void onCanvasPressed(const QPoint &point);
-    void onMouseMovedOverCanvas(const QPoint &point);
     void onEditorClosed();
+    void onSplineChanged(BSpline spline);
+    void onMChanged(int m);
+    void onM1Changed(int m);
+    void onEditorZoomChanged(double z);
+    void onEditorCameraChanged(const Point3D &point);
 
 
 private:
@@ -61,7 +65,4 @@ private:
     ConfigKeeper *configKeeper{};
 };
 
-inline void MainWindow::onEditorClosed()
-{
-    editorWindow = nullptr;
-}
+
