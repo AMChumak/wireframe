@@ -7,15 +7,18 @@ using Eigen::Matrix4d;
 #include "Polyline3D.h"
 
 
-int comparePoints(const Point3D &p1, const Point3D &p2);
+int comparePoints(const Point3D& p1, const Point3D& p2);
 
-class Camera {
+class Camera
+{
 public:
     explicit Camera(double width, double height, double zForward, double zBack);
-    std::vector <std::pair<Point3D, Point3D>> render(const Matrix4d &prescaling,const std::vector<Polyline3D> &polylines) const;
+    std::vector<std::pair<Point3D, Point3D>> render(const Matrix4d& prescaling,
+                                                    const std::vector<Polyline3D>& polylines, bool doSort = true) const;
     void updateSizes(double width, double height);
     void zoom(double zoom);
     void setZoom(double zoom);
+    double getZoom();
     Point3D findPointOnSphere(const Point3D& point) const;
 
 private:

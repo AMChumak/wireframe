@@ -93,11 +93,14 @@ EditorWindow::EditorWindow(QWidget* parent)
 
 
     //connections
+    connect(okButton, SIGNAL(clicked()), this, SLOT(okButtonClicked()));
     connect(addVertexButton, &QRadioButton::toggled, this, &EditorWindow::onRadioButtonClicked);
     connect(canvasArea, &CanvasArea::addVertexModeChanged, this, &EditorWindow::onAddVertexModeChanged);
     connect(canvasArea, &CanvasArea::openedSettingsForVertex, this, &EditorWindow::openedSettings);
     connect(canvasArea, &CanvasArea::updatedCntKeyPoints, this, &EditorWindow::onCntKeyPointsChanged);
     connect(canvasArea, &CanvasArea::updatedSpline, this, &EditorWindow::onSplineChanged);
+    connect(canvasArea, &CanvasArea::updatedCamera, this, &EditorWindow::onCameraChanged);
+    connect(canvasArea, &CanvasArea::updatedZoom, this, &EditorWindow::onZoomChanged);
 
     //window settings
     resize(800, 600);
@@ -214,6 +217,11 @@ void EditorWindow::zoomReset()
     canvasArea->zoomReset();
 }
 
+void EditorWindow::okButtonClicked()
+{
+    close();
+}
+
 void EditorWindow::onRadioButtonClicked(bool checked)
 {
     canvasArea->setAddVertexMode(checked);
@@ -253,4 +261,15 @@ void EditorWindow::onM1Changed(int m1)
 void EditorWindow::onSplineChanged(BSpline spline)
 {
     emit splineChanged(spline);
+}
+
+void EditorWindow::onZoomChanged(double zoom)
+{
+
+    emit zoomChanged(zoom);
+}
+
+void EditorWindow::onCameraChanged(Point3D camera)
+{
+    emit cameraChanged(camera);
 }

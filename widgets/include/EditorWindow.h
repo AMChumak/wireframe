@@ -9,6 +9,7 @@
 #include <QPushButton>
 #include <QRadioButton>
 
+#include "Camera.h"
 #include "CanvasArea.h"
 #include "PointMenu.h"
 
@@ -33,6 +34,8 @@ signals:
     void MChanged(int m);
     void M1Changed(int m1);
     void splineChanged(BSpline spline);
+    void zoomChanged(double zoom);
+    void cameraChanged(Point3D camera);
 
 public slots:
     void closeEvent(QCloseEvent* event) override;
@@ -50,6 +53,7 @@ private slots:
     void zoomIn();
     void zoomOut();
     void zoomReset();
+    void okButtonClicked();
     void onRadioButtonClicked(bool checked);
     void onAddVertexModeChanged(bool mode);
     void onPointMenuClosed();
@@ -58,6 +62,8 @@ private slots:
     void onMChanged(int m);
     void onM1Changed(int m1);
     void onSplineChanged(BSpline spline);
+    void onZoomChanged(double zoom);
+    void onCameraChanged(Point3D camera);
 
 private:
     QWidget* window;

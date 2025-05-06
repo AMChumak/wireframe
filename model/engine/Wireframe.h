@@ -24,7 +24,9 @@ public:
     std::vector<Polyline3D> getPolylines() const; // возвращает сырые ломанные
     Eigen::Matrix4d getTransform() const;
     void addRotation (const Point3D& start, const Point3D& end);
+    void addRotation (const Eigen::Matrix4d& rot);
     void resetRotation();
+    Matrix4d getRotationMatrix() const;
     void setCntFormingLines(const int &newM);
     void setCntPartsInSegment(const int &newM1);
     int getPartsInSegment() const;

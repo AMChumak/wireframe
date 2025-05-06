@@ -28,7 +28,7 @@ Camera::Camera(double width, double height, double zForward, double zBack)
 }
 
 std::vector<std::pair<Point3D, Point3D>> Camera::render(const Matrix4d& prescaling,
-                                                        const std::vector<Polyline3D>& polylines) const
+                                                        const std::vector<Polyline3D>& polylines, bool doSort) const
 {
     const Matrix4d transform = projection_ * prescaling;
     std::vector<std::pair<Point3D, Point3D>> result;
@@ -63,11 +63,14 @@ std::vector<std::pair<Point3D, Point3D>> Camera::render(const Matrix4d& prescali
             lastPoint = nextPoint;
         }
     }
-    std::sort(result.begin(), result.end(), [](std::pair<Point3D, Point3D> a, std::pair<Point3D, Point3D> b) -> bool
-    {
-        if (comparePoints(a.first, b.first) < 0) return true;
-        return false;
-    });
+
+    if (doSort)
+        std::sort(result.begin(), result.end(), [](std::pair<Point3D, Point3D> a, std::pair<Point3D, Point3D> b) -> bool
+        {
+            if (comparePoints(a.first, b.first) < 0) return true;
+            return false;
+        });
+
     return result;
 }
 
@@ -82,10 +85,10 @@ void Camera::zoom(double zoom)
 {
     zForward_ *= zoom;
     if (zForward_ >= 8.9)
-    {
         zForward_ = 8.9;
-    }
-    std::cout << zForward_ << std::endl;
+
+    if (zForward_ < 1)
+        zForward_ = 1;
     updateProjection();
 }
 
@@ -95,21 +98,27 @@ void Camera::setZoom(double zoom)
     updateProjection();
 }
 
+double Camera::getZoom()
+{
+    return zForward_;
+}
+
+
 Point3D Camera::findPointOnSphere(const Point3D& point) const
 {
     //с одной стороны знаем прямую, на которой лежит точка, с другой стороны, точка лежит на сфере радиуса корень из 2 с центром в 0,0,10
     //считаем квадратное уравнение и берём точку с полусферы, которая ближе к камере
     double a = point.x * (width_ / 2);
     double b = point.y * (height_ / 2);
-    double k = std::sqrt(a*a + b *b);
-    double d = 100 - 97 * (1 + k*k/(zForward_*zForward_));
+    double k = std::sqrt(a * a + b * b);
+    double d = 100 - 97 * (1 + k * k / (zForward_ * zForward_));
     if (d < 0)
     {
-        return {-10,-10,-10};
+        return {-10, -10, -10};
     }
-    double z = (10 - std::sqrt(d)) / (1 + k*k/(zForward_*zForward_));
-    a *= z/zForward_;
-    b *= z/zForward_;
+    double z = (10 - std::sqrt(d)) / (1 + k * k / (zForward_ * zForward_));
+    a *= z / zForward_;
+    b *= z / zForward_;
     z = z - 10;
     return {a, b, z};
 }

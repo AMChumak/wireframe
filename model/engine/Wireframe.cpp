@@ -147,10 +147,21 @@ void Wireframe::addRotation(const Point3D& start, const Point3D& end)
     transform = rotation * shiftScaling;
 }
 
+void Wireframe::addRotation(const Eigen::Matrix4d& rot)
+{
+    rotation = rot * rotation;
+    transform = rotation * shiftScaling;
+}
+
 void Wireframe::resetRotation()
 {
     rotation.setIdentity();
     transform = rotation * shiftScaling;
+}
+
+Matrix4d Wireframe::getRotationMatrix() const
+{
+    return rotation;
 }
 
 void Wireframe::setCntFormingLines(const int& newM)

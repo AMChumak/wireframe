@@ -29,6 +29,8 @@ signals:
     void openedSettingsForVertex(double x, double y, int j, int i);
     void updatedCntKeyPoints(int cnt);
     void updatedSpline(BSpline spline);
+    void updatedCamera(Point3D camera);
+    void updatedZoom(double zoom);
 
 public slots:
     void resizeEvent(QResizeEvent* event) override;

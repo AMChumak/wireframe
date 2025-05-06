@@ -40,6 +40,8 @@ private slots:
     void onM1Changed(int m);
     void onEditorZoomChanged(double z);
     void onEditorCameraChanged(const Point3D &point);
+    void renderAreaZoomChanged(double z);
+    void renderAreaRotationChanged(Eigen::Matrix4d m);
 
 
 private:

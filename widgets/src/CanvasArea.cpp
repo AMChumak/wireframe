@@ -199,6 +199,7 @@ void CanvasArea::mouseMoveEvent(QMouseEvent* event)
     {
         cameraCenter += QPointToPoint3D(startMovePosition - event->pos()) / zoom;
         startMovePosition = event->pos();
+        emit updatedCamera(cameraCenter);
     }
     else if (mousePressed_) //Если попали по точке -> сдвигаем точку
     {
@@ -223,6 +224,7 @@ void CanvasArea::wheelEvent(QWheelEvent* event)
         zoom *= 1.1;
     else
         zoom /= 1.1;
+    emit updatedZoom(zoom);
     update();
 }
 
@@ -322,12 +324,14 @@ void CanvasArea::updateK(const int &newK)
 void CanvasArea::zoomIn()
 {
     zoom *= 1.1;
+    emit updatedZoom(zoom);
     update();
 }
 
 void CanvasArea::zoomOut()
 {
     zoom /= 1.1;
+    emit updatedZoom(zoom);
     update();
 }
 
@@ -336,11 +340,14 @@ void CanvasArea::zoomReset()
     auto& keyPoints = spline.keyPoints();
     auto& points = spline.points();
 
+    cameraCenter = {0, 0, 0};
+    emit updatedCamera(cameraCenter);
+
     if (keyPoints.size() == 0)
     {
         zoom = 10.0;
-        cameraCenter = {0, 0, 0};
         update();
+        emit updatedZoom(zoom);
         return;
     }
 
@@ -386,7 +393,7 @@ void CanvasArea::zoomReset()
         }
     }
     zoom = size().width() / (2 * minSize.x) / 1.2;
-    cameraCenter = {0, 0, 0};
+    emit updatedZoom(zoom);
     update();
 }
 
@@ -401,5 +408,7 @@ void CanvasArea::setCamera(const Point3D& camera, const double zoom)
 {
     this->cameraCenter = camera;
     this->zoom = zoom;
+    emit updatedCamera(cameraCenter);
+    emit updatedZoom(zoom);
     update();
 }

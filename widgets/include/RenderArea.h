@@ -16,12 +16,11 @@ public:
     QSize minimumSizeHint() const override;
     QSize sizeHint() const override;
 
-    void setZoom(double zoom);
-
-
 signals:
     void mousePressed(const QPoint &pos);
     void mouseMoved(const QPoint &pos);
+    void rotationChanged(Eigen::Matrix4d rotation);
+    void zoomChanged(double zoom);
 
 public slots:
     void mousePressEvent(QMouseEvent *event) override;
@@ -30,6 +29,8 @@ public slots:
     void wheelEvent(QWheelEvent *event) override;
     void mouseReleaseEvent(QMouseEvent* event) override;
     void resetRotation();
+    void setZoom(double zoom);
+    void setRotation(const Eigen::Matrix4d& rotation);
     void onMUpdated(int m);
     void onM1Updated(int m1);
     void onSetFormingLine(BSpline formingLine);
@@ -38,6 +39,7 @@ protected:
     void paintEvent(QPaintEvent *event) override;
 
 private:
+    void drawAxes(QPainter* painter);
     void drawWireframe(QPainter *painter);
 
 private:

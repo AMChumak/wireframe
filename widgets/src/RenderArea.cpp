@@ -33,6 +33,14 @@ void RenderArea::setZoom(double zoom)
     update();
 }
 
+void RenderArea::setRotation(const Eigen::Matrix4d& rotation)
+{
+    wireframe->resetRotation();
+    wireframe->addRotation(rotation);
+    wireframeLines = camera->render(wireframe->getTransform(), wireframe->getPolylines());
+    update();
+}
+
 void RenderArea::resizeScreen(const QSize& size)
 {
     screen = QImage(size.width(), size.height(), QImage::Format_ARGB32);
@@ -53,6 +61,7 @@ void RenderArea::wheelEvent(QWheelEvent* event)
     {
         camera->zoom(0.9090909);
     }
+    emit zoomChanged(camera->getZoom());
     wireframeLines = camera->render(wireframe->getTransform(), wireframe->getPolylines());
     update();
     QWidget::wheelEvent(event);
@@ -90,6 +99,7 @@ void RenderArea::mouseMoveEvent(QMouseEvent* event)
         wireframe->addRotation(lastPointPos, newPointPos);
         lastPointPos = newPointPos;
         wireframeLines = camera->render(wireframe->getTransform(), wireframe->getPolylines());
+        emit rotationChanged(wireframe->getRotationMatrix());
         update();
     }
     QWidget::mouseMoveEvent(event);
@@ -101,7 +111,36 @@ void RenderArea::paintEvent(QPaintEvent* event)
     QPainter painter(this);
     painter.drawImage(QRect(0, 0, screen.width(), screen.height()), screen);
     drawWireframe(&painter);
+    drawAxes(&painter);
     painter.end();
+}
+
+void RenderArea::drawAxes(QPainter* painter)
+{
+    double q = camera->getZoom();
+    Polyline3D axisX{std::vector<Point3D>{Point3D{0,0,0},Point3D{0.5/q,0,0}}};
+    Polyline3D axisY{std::vector<Point3D>{Point3D{0,0,0},Point3D{0,0.5/q,0}}};
+    Polyline3D axisZ{std::vector<Point3D>{Point3D{0,0,0},Point3D{0,0,0.5/q}}};
+
+    std::vector<Polyline3D> axes = {axisX, axisY, axisZ};
+
+    auto lines = camera->render(wireframe->getRotationMatrix(), axes, false);
+
+    int w = size().width();
+    int h = size().height();
+
+    std::vector<QColor> colors = {Qt::red, Qt::green, Qt::blue};
+    for (int i = 0; i < lines.size(); i++)
+    {
+        auto pr = lines[i];
+        int x1 = w * pr.first.x + h*0.05;
+        int y1 = h * pr.first.y + h*0.05;
+        int x2 = w * pr.second.x + h*0.05;
+        int y2 = h * pr.second.y + h*0.05;
+
+        painter->setPen(QPen(colors[i], 1));
+        painter->drawLine(x1, y1, x2, y2);
+    }
 }
 
 void RenderArea::drawWireframe(QPainter* painter)
